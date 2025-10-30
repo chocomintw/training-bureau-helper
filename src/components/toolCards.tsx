@@ -1,8 +1,10 @@
 import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
+import { Link } from 'react-router-dom';
 import { 
   BarChart3, 
+  FileText,
   ChevronLeft,
   ChevronRight,
   ArrowRight
@@ -33,9 +35,9 @@ const ToolCards: React.FC = () => {
       isNew: true
     },
     {
-      id: 'vpat',
-      name: 'VPAT Processor (test)',
-      icon: <BarChart3 className="h-8 w-8" />,
+      id: 'vpat-processor',
+      name: 'VPAT Processor (Beta)',
+      icon: <FileText className="h-8 w-8" />,
       category: 'Processor',
       description: 'Simply parse logs from every applicants.',
       longDescription: 'Parse chat logs from VPAT sessions by character names and seperate result for each character.',
@@ -148,10 +150,12 @@ const ToolCards: React.FC = () => {
                 </span>
               </div>
               
-              <Button className="w-full bg-linear-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white group/btn">
-                Open Tool
-                <ArrowRight className="h-4 w-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
-              </Button>
+              <Link to={`/training-bureau-helper/tool/${tool.id}/`}>
+                <Button className="w-full bg-linear-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white group/btn">
+                  Open Tool
+                  <ArrowRight className="h-4 w-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
             </CardContent>
           </Card>
         ))}
