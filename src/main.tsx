@@ -21,7 +21,7 @@ const router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: '/tool/:toolId/',
+        path: 'tool/:toolId/',
         element: <ToolPage />,
       },
     ],
