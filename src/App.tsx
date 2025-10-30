@@ -1,6 +1,4 @@
-import React from 'react';
 import FirebaseExample from './components/firebaseExample';
-import './App.css';
 
 function App() {
   return (
