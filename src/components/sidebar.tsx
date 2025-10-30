@@ -49,7 +49,7 @@ const Sidebar: React.FC = () => {
       {/* Navigation */}
       <nav className="p-4">
         <div className="space-y-1">
-          <button className="w-full flex items-center space-x-3 px-3 py-2 text-sm font-medium text-green-400 dark:text-green-800 bg-green-100 dark:bg-green-900/20 rounded-lg">
+          <button className="w-full flex items-center space-x-3 px-3 py-2 text-sm font-medium text-green-800 dark:text-green-600 bg-green-100 dark:bg-green-600/20 rounded-lg">
             <Home className="h-4 w-4" />
             <span>Home</span>
           </button>
