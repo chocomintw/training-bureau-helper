@@ -2,12 +2,12 @@ import { Outlet } from 'react-router-dom'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../lib/firebase'
 import { Login } from '../components/login'
-import { Loader2, CheckCircle, XCircle, Info, LogOut } from 'lucide-react'
+import { Loader2, XCircle, Info, LogOut } from 'lucide-react'
 import { useDiscordAuth } from '../hooks/useDiscordAuth'
 
 export default function RootLayout() {
   const [user, authLoading] = useAuthState(auth)
-  const { discordUser, loading: discordLoading, isDiscordUser } = useDiscordAuth()
+  const { loading: discordLoading, isDiscordUser } = useDiscordAuth()
 
   const loading = authLoading || discordLoading
 
@@ -96,61 +96,6 @@ export default function RootLayout() {
   // Discord user confirmed - show the application
   return (
     <div className="min-h-screen bg-gray-50">
-      {/* Header with user info and logout */}
-      <header className="bg-white shadow-sm border-b">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="flex justify-between items-center h-16">
-            <div className="flex items-center">
-              <h1 className="text-xl font-semibold text-gray-900">Your App</h1>
-            </div>
-            
-            <div className="flex items-center gap-4">
-              {/* Discord user info - safely handle null discordUser */}
-              {discordUser && (
-                <div className="flex items-center gap-3">
-                  {discordUser.photoURL && (
-                    <img 
-                      src={discordUser.photoURL} 
-                      alt="Discord avatar" 
-                      className="w-8 h-8 rounded-full"
-                    />
-                  )}
-                  <div className="text-right">
-                    <p className="text-sm font-medium text-gray-900">
-                      {discordUser.displayName || 'Discord User'}
-                    </p>
-                    <p className="text-xs text-gray-500">Discord</p>
-                  </div>
-                </div>
-              )}
-              
-              <button
-                onClick={handleLogout}
-                className="flex items-center gap-2 px-3 py-2 text-sm text-gray-700 hover:text-gray-900 hover:bg-gray-100 rounded-lg transition-colors"
-              >
-                <LogOut className="w-4 h-4" />
-                Sign Out
-              </button>
-            </div>
-          </div>
-        </div>
-      </header>
-
-      {/* Optional: Show Discord user info in development */}
-      {import.meta.env.DEV && discordUser && (
-        <div className="bg-blue-50 border border-blue-200 p-3">
-          <div className="flex items-center justify-between">
-            <div className="flex items-center">
-              <CheckCircle className="w-4 h-4 text-green-600 mr-2" />
-              <span className="text-sm font-medium">Discord User Verified</span>
-            </div>
-            <div className="text-xs text-blue-700">
-              {discordUser.displayName} • {discordUser.uid}
-            </div>
-          </div>
-        </div>
-      )}
-      
       <main>
         <Outlet />
       </main>
