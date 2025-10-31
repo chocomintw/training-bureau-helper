@@ -4,10 +4,6 @@ import { auth } from '../lib/firebase'
 import { Login } from '../components/login'
 import { Loader2 } from 'lucide-react'
 
-// Import your existing components
-import Header from '../components/header' // Your existing header
-import Sidebar from '../components/sidebar' // Your existing sidebar
-
 export default function RootLayout() {
   const [user, loading] = useAuthState(auth)
 
@@ -23,21 +19,6 @@ export default function RootLayout() {
     return <Login />
   }
 
-  // Return your existing layout structure with auth
-  return (
-    <div className="flex h-screen bg-background">
-      {/* Your existing sidebar */}
-      <Sidebar />
-      
-      <div className="flex-1 flex flex-col overflow-hidden">
-        {/* Your existing header */}
-        <Header />
-        
-        {/* Main content area */}
-        <main className="flex-1 overflow-auto">
-          <Outlet />
-        </main>
-      </div>
-    </div>
-  )
+  // Just render the outlet - let the individual pages handle their own layout
+  return <Outlet />
 }
