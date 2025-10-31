@@ -2,8 +2,7 @@ import React, { useState } from 'react';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Link } from 'react-router-dom';
-import { 
-  BarChart3, 
+import {  
   FileText,
   ChevronLeft,
   ChevronRight,
@@ -25,15 +24,6 @@ const ToolCards: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const tools: Tool[] = [
-    {
-      id: 'analytics',
-      name: 'Personal Analytics',
-      icon: <BarChart3 className="h-8 w-8" />,
-      category: 'Analytics',
-      description: 'Track and visualize your activity data.',
-      longDescription: 'All of your activity on the website with great charts and more!',
-      isNew: true
-    },
     {
       id: 'vpat-processor',
       name: 'VPAT Processor (Beta)',

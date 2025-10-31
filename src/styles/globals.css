@@ -1,0 +1,61 @@
+/* styles/globals.css */
+@import "tailwindcss";
+
+:root {
+  /* Light theme - Blue dominant */
+  --color-background: oklch(0.98 0.01 240);
+  --color-foreground: oklch(0.15 0.05 240);
+  --color-primary: oklch(0.55 0.18 240);
+  --color-secondary: oklch(0.95 0.03 180);
+  --color-accent: oklch(0.60 0.15 180);
+  --color-muted: oklch(0.96 0.02 240);
+  --color-border: oklch(0.92 0.02 240);
+  --color-card: oklch(1 0 0);
+  
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, oklch(0.55 0.18 240) 0%, oklch(0.57 0.20 180) 100%);
+  --gradient-subtle: linear-gradient(135deg, oklch(0.97 0.02 240) 0%, oklch(0.98 0.02 180) 100%);
+}
+
+.dark {
+  /* Dark theme - Green accents */
+  --color-background: oklch(0.12 0.03 240);
+  --color-foreground: oklch(0.98 0.01 240);
+  --color-primary: oklch(0.65 0.16 180);
+  --color-secondary: oklch(0.25 0.05 180);
+  --color-accent: oklch(0.70 0.14 160);
+  --color-muted: oklch(0.20 0.03 240);
+  --color-border: oklch(0.25 0.03 240);
+  --color-card: oklch(0.18 0.03 240);
+  
+  /* Dark theme gradients */
+  --gradient-primary: linear-gradient(135deg, oklch(0.65 0.16 180) 0%, oklch(0.70 0.14 160) 100%);
+  --gradient-subtle: linear-gradient(135deg, oklch(0.18 0.03 240) 0%, oklch(0.22 0.04 200) 100%);
+}
+
+/* Apply the variables */
+@theme inline {
+  --color-background: var(--color-background);
+  --color-foreground: var(--color-foreground);
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-accent: var(--color-accent);
+  --color-muted: var(--color-muted);
+  --color-border: var(--color-border);
+  --color-card: var(--color-card);
+}
+
+/* Custom utility classes */
+.bg-background { background-color: var(--color-background); }
+.text-foreground { color: var(--color-foreground); }
+.bg-primary { background-color: var(--color-primary); }
+.text-primary { color: var(--color-primary); }
+.bg-secondary { background-color: var(--color-secondary); }
+.bg-accent { background-color: var(--color-accent); }
+.bg-muted { background-color: var(--color-muted); }
+.border-border { border-color: var(--color-border); }
+.bg-card { background-color: var(--color-card); }
+
+/* Gradient utilities */
+.bg-gradient-primary { background: var(--gradient-primary); }
+.bg-gradient-subtle { background: var(--gradient-subtle); }

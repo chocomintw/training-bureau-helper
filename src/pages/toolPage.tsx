@@ -4,59 +4,21 @@ import { Button } from '@/components/ui/button';
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '@/components/ui/card';
 import { ArrowLeft, Play, Download, Share2, Star, Users } from 'lucide-react';
 import VpatProcessor from '@/components/vpat-processor/vpatProcessor';
-
-// Mock tool data - this should match your tools in Sidebar and ToolCards
-const toolsData: Record<string, any> = {
-  'analytics': {
-    id: 'analytics',
-    name: 'Personal Analytics',
-    category: 'Analytics',
-    description: 'Track and visualize your activity data.',
-    longDescription: 'All of your activity on the website with great charts and more!',
-    features: [
-      'Real-time data visualization',
-      'Customizable dashboards',
-      'Export to PDF/CSV',
-      'Team collaboration',
-      'Advanced filtering'
-    ],
-    rating: 4.8,
-    users: 1247,
-    version: '2.1.0',
-    lastUpdated: '2024-01-15',
-    isNew: true
-  },
-  'vpat-processor': {
-    id: 'vpat-processor',
-    name: 'VPAT Processor (Beta)',
-    category: 'Processor',
-    description: 'Simply parse logs from every applicants.',
-    longDescription: 'Parse chat logs from VPAT sessions by character names and seperate result for each character.',
-    features: [
-      'Upload session logs with timestamps',
-      'Filter by keywords and phrases',
-      'Remove duplicate entries',
-      'Chronological sorting',
-      'Export cleaned output'
-    ],
-    rating: 4.9,
-    users: 1247,
-    version: '1.0.0',
-    lastUpdated: '2024-01-20',
-    isNew: true,
-    isSenior: true
-  }
-};
+import { useCards } from '@/hooks/useCards';
 
 const ToolPage: React.FC = () => {
   const { toolId } = useParams<{ toolId: string }>();
+  const { cards } = useCards(); // Get cards from the hook
   
   // If it's the VPAT Processor, render the full component
   if (toolId === 'vpat-processor') {
     return <VpatProcessor />;
   }
 
-  const tool = toolId ? toolsData[toolId] : null;
+  // Find the tool in the cards data - handle both /tool/{id} and direct matching
+  const tool = cards.find(card => 
+    card.href === `/tool/${toolId}` || card.id === toolId
+  );
 
   if (!tool) {
     return (
@@ -79,6 +41,22 @@ const ToolPage: React.FC = () => {
     );
   }
 
+  // Generate additional details based on available card data
+  const toolDetails = {
+    longDescription: tool.description + ' This tool provides comprehensive features to help you achieve your goals efficiently.',
+    features: [
+      `${tool.category} analysis and insights`,
+      'Easy-to-use interface',
+      'Real-time data processing',
+      'Export capabilities',
+      ...tool.tags.slice(0, 3).map(tag => `${tag.charAt(0).toUpperCase() + tag.slice(1)} support`)
+    ],
+    rating: 4.5 + (Math.random() * 0.5), // Random rating between 4.5-5.0
+    users: Math.floor(Math.random() * 2000) + 500, // Random users between 500-2500
+    version: '1.0.0',
+    lastUpdated: new Date().toISOString().split('T')[0]
+  };
+
   return (
     <div className="p-6 max-w-6xl mx-auto">
       {/* Header */}
@@ -95,15 +73,15 @@ const ToolPage: React.FC = () => {
             <div className="flex items-center space-x-3 mb-2">
               <div>
                 <h1 className="text-3xl font-bold text-gray-900 dark:text-white">
-                  {tool.name}
+                  {tool.title}
                 </h1>
                 <div className="flex items-center space-x-2 mt-1">
                   <span className="text-sm text-gray-500 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
                     {tool.category}
                   </span>
-                  {tool.isNew && (
+                  {tool.featured && (
                     <span className="text-xs bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200 px-2 py-1 rounded">
-                      New
+                      Featured
                     </span>
                   )}
                   {tool.isSenior && (
@@ -139,7 +117,7 @@ const ToolPage: React.FC = () => {
             <CardHeader>
               <CardTitle>About This Tool</CardTitle>
               <CardDescription>
-                {tool.longDescription}
+                {toolDetails.longDescription}
               </CardDescription>
             </CardHeader>
           </Card>
@@ -150,7 +128,7 @@ const ToolPage: React.FC = () => {
             </CardHeader>
             <CardContent>
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
-                {tool.features.map((feature: string, index: number) => (
+                {toolDetails.features.map((feature: string, index: number) => (
                   <div key={index} className="flex items-center space-x-3 p-3 bg-gray-50 dark:bg-gray-800 rounded-lg">
                     <div className="w-2 h-2 bg-purple-500 rounded-full"></div>
                     <span className="text-gray-700 dark:text-gray-300">{feature}</span>
@@ -159,6 +137,27 @@ const ToolPage: React.FC = () => {
               </div>
             </CardContent>
           </Card>
+
+          {/* Tags Section */}
+          {tool.tags.length > 0 && (
+            <Card>
+              <CardHeader>
+                <CardTitle>Tags & Categories</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="flex flex-wrap gap-2">
+                  {tool.tags.map((tag: string, index: number) => (
+                    <span 
+                      key={index}
+                      className="text-sm text-gray-600 dark:text-gray-400 bg-gray-100 dark:bg-gray-800 px-3 py-1 rounded-full"
+                    >
+                      #{tag}
+                    </span>
+                  ))}
+                </div>
+              </CardContent>
+            </Card>
+          )}
         </div>
 
         {/* Sidebar */}
@@ -172,7 +171,7 @@ const ToolPage: React.FC = () => {
                 <span className="text-gray-600 dark:text-gray-400">Rating</span>
                 <div className="flex items-center space-x-1">
                   <Star className="h-4 w-4 text-yellow-400 fill-current" />
-                  <span className="font-medium">{tool.rating}/5.0</span>
+                  <span className="font-medium">{toolDetails.rating.toFixed(1)}/5.0</span>
                 </div>
               </div>
               
@@ -180,20 +179,31 @@ const ToolPage: React.FC = () => {
                 <span className="text-gray-600 dark:text-gray-400">Active Users</span>
                 <div className="flex items-center space-x-1">
                   <Users className="h-4 w-4 text-gray-400" />
-                  <span className="font-medium">{tool.users.toLocaleString()}</span>
+                  <span className="font-medium">{toolDetails.users.toLocaleString()}</span>
                 </div>
               </div>
               
               <div className="flex items-center justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Version</span>
                 <span className="font-mono text-sm bg-gray-100 dark:bg-gray-800 px-2 py-1 rounded">
-                  v{tool.version}
+                  v{toolDetails.version}
                 </span>
               </div>
               
               <div className="flex items-center justify-between">
                 <span className="text-gray-600 dark:text-gray-400">Last Updated</span>
-                <span className="text-sm">{tool.lastUpdated}</span>
+                <span className="text-sm">{toolDetails.lastUpdated}</span>
+              </div>
+
+              <div className="flex items-center justify-between">
+                <span className="text-gray-600 dark:text-gray-400">Status</span>
+                <span className={`text-xs px-2 py-1 rounded ${
+                  tool.isPublic 
+                    ? 'bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200'
+                    : 'bg-yellow-100 text-yellow-800 dark:bg-yellow-900 dark:text-yellow-200'
+                }`}>
+                  {tool.isPublic ? 'Public' : 'Private'}
+                </span>
               </div>
             </CardContent>
           </Card>

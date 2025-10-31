@@ -1,3 +1,4 @@
+// src/main.tsx
 import React from 'react'
 import ReactDOM from 'react-dom/client'
 import { createHashRouter, RouterProvider } from 'react-router-dom'
@@ -13,7 +14,7 @@ import NotFound from './pages/notFound'
 const router = createHashRouter([
   {
     path: '/',
-    element: <RootLayout />, // This works now - no props needed
+    element: <RootLayout />,
     errorElement: <NotFound />,
     children: [
       {
@@ -30,7 +31,7 @@ const router = createHashRouter([
 
 ReactDOM.createRoot(document.getElementById('root')!).render(
   <React.StrictMode>
-    <ThemeProvider defaultTheme="system" storageKey="ui-theme">
+    <ThemeProvider defaultTheme="system" storageKey="training-bureau-theme">
       <RouterProvider router={router} />
     </ThemeProvider>
   </React.StrictMode>,
