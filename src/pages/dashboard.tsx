@@ -1,131 +1,159 @@
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
+import { ThemeToggle } from '@/components/themeToggler'
+import { Search, Menu, X, LogOut } from 'lucide-react'
 import { useAuthState } from 'react-firebase-hooks/auth'
 import { auth } from '../lib/firebase'
-import { Login } from '../components/login'
-import { Loader2 } from 'lucide-react'
 import { useDiscordAuth } from '../hooks/useDiscordAuth'
+import { useState } from 'react'
 
-// Your existing imports
-import Header from '../components/header'
-import ToolCard from '../components/toolCard' // Your ToolCard component
-import { tools as externalTools } from '../config/tools' // Your tools data
-import { BarChart3, FileText } from 'lucide-react' // Icons for mapping
+// Add props interface
+interface HeaderProps {
+  onSearch?: (query: string) => void
+  searchQuery?: string
+}
 
-export default function Dashboard() {
-  const [user, loading] = useAuthState(auth)
+export default function Header({ onSearch, searchQuery = '' }: HeaderProps) {
+  const [user] = useAuthState(auth)
   const { logout } = useDiscordAuth()
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
-  // Map your external tools to match ToolCard props
-  const mapTools = externalTools.map(tool => {
-    // Map icon string to React component
-    let icon: React.ReactNode;
-    switch (tool.icon) {
-      case 'BarChart3':
-        icon = <BarChart3 className="h-8 w-8" />;
-        break;
-      case 'FileText':
-        icon = <FileText className="h-8 w-8" />;
-        break;
-      default:
-        icon = <FileText className="h-8 w-8" />;
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (onSearch) {
+      onSearch(e.target.value)
     }
-
-    return {
-      id: tool.id,
-      name: tool.label, // Map 'label' to 'name'
-      icon: icon,
-      category: tool.category,
-      description: tool.description,
-      longDescription: tool.longDescription,
-      isNew: tool.isNew,
-      isSenior: tool.isSenior
-    }
-  });
-
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center min-h-screen">
-        <Loader2 className="w-8 h-8 animate-spin" />
-      </div>
-    )
   }
 
-  if (!user) {
-    return <Login />
+  const handleSearchSubmit = (e: React.FormEvent) => {
+    e.preventDefault()
+    // Search is handled by parent component via onSearch
   }
 
   return (
-    <div className="min-h-screen bg-linear-to-br from-background to-muted/20">
-      <Header />
-      
-      <main className="container mx-auto px-4 py-8">
-        {/* Hero Section */}
-        <section className="text-center mb-12">
-          <h1 className="text-4xl font-bold mb-4">Training Bureau Helper</h1>
-          <p className="text-xl text-muted-foreground max-w-2xl mx-auto">
-            A collection of tools to assist with training bureau operations and management.
-          </p>
-        </section>
-
-        {/* User Info Section */}
-        <div className="flex justify-end mb-6">
-          <div className="flex items-center gap-3 bg-card p-3 rounded-lg border">
-            {user.photoURL && (
-              <img 
-                src={user.photoURL} 
-                alt="Profile" 
-                className="w-8 h-8 rounded-full"
-              />
-            )}
-            <div className="flex flex-col">
-              <span className="text-sm font-medium">
-                {user.displayName || user.email}
-              </span>
-              <button
-                onClick={logout}
-                className="text-xs text-muted-foreground hover:text-foreground transition-colors"
-              >
-                Logout
-              </button>
-            </div>
+    <header className="border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60 sticky top-0 z-40">
+      <div className="container mx-auto px-4 h-16 flex items-center justify-between">
+        {/* Left side - Logo */}
+        <div className="flex items-center space-x-2">
+          <div className="w-8 h-8 bg-linear-to-r from-green-500 to-blue-500 rounded-lg flex items-center justify-center">
+            <span className="text-white font-bold text-sm">TB</span>
           </div>
+          <span className="font-bold text-xl hidden sm:inline-block">
+            Training Bureau
+          </span>
         </div>
 
-        {/* Tools Grid - Use mapped tools */}
-        <section className="mb-12">
-          <h2 className="text-2xl font-semibold mb-6">Available Tools</h2>
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {mapTools.map((tool) => (
-              <ToolCard
-                key={tool.id}
-                tool={tool}
+        {/* Center - Search Bar (only show if onSearch is provided) */}
+        {onSearch && (
+          <div className="flex-1 max-w-2xl mx-8">
+            <form onSubmit={handleSearchSubmit} className="relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+              <Input
+                type="search"
+                placeholder="Search tools..."
+                value={searchQuery}
+                onChange={handleSearchChange}
+                className="pl-10 pr-4 bg-muted/50 border-muted focus:bg-background"
               />
-            ))}
+            </form>
           </div>
-        </section>
+        )}
 
-        {/* Stats Section */}
-        <section className="bg-card rounded-lg border p-6 mb-12">
-          <h2 className="text-2xl font-semibold mb-4">Platform Statistics</h2>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">{mapTools.length}</div>
-              <div className="text-muted-foreground">Total Tools</div>
-            </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">
-                {mapTools.filter(tool => tool.isNew).length}
+        {/* Right side - User info and controls */}
+        <div className="flex items-center space-x-4">
+          <ThemeToggle />
+          
+          {user && (
+            <div className="flex items-center space-x-3">
+              <div className="hidden sm:flex items-center space-x-2 bg-muted/50 rounded-lg px-3 py-1.5">
+                {user.photoURL && (
+                  <img 
+                    src={user.photoURL} 
+                    alt="Profile" 
+                    className="w-6 h-6 rounded-full"
+                  />
+                )}
+                <span className="text-sm font-medium max-w-32 truncate">
+                  {user.displayName || user.email?.split('@')[0]}
+                </span>
               </div>
-              <div className="text-muted-foreground">New Tools</div>
+              
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={logout}
+                className="hidden sm:flex items-center space-x-1"
+              >
+                <LogOut className="h-4 w-4" />
+                <span>Logout</span>
+              </Button>
             </div>
-            <div className="text-center">
-              <div className="text-3xl font-bold text-primary">
-                {mapTools.filter(tool => tool.isSenior).length}
+          )}
+
+          <Button
+            variant="ghost"
+            size="sm"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="lg:hidden"
+          >
+            {isMobileMenuOpen ? <X className="h-4 w-4" /> : <Menu className="h-4 w-4" />}
+          </Button>
+        </div>
+      </div>
+
+      {/* Mobile Menu */}
+      {isMobileMenuOpen && (
+        <div className="lg:hidden border-t bg-background/95 backdrop-blur">
+          <div className="container mx-auto px-4 py-4 space-y-4">
+            {/* Mobile Search */}
+            {onSearch && (
+              <div className="pt-2">
+                <form onSubmit={handleSearchSubmit} className="relative">
+                  <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground h-4 w-4" />
+                  <Input
+                    type="search"
+                    placeholder="Search tools..."
+                    value={searchQuery}
+                    onChange={handleSearchChange}
+                    className="pl-10 pr-4 bg-muted/50 border-muted focus:bg-background"
+                  />
+                </form>
               </div>
-              <div className="text-muted-foreground">Senior Tools</div>
-            </div>
+            )}
+
+            {/* Mobile User Info */}
+            {user && (
+              <div className="pt-4 border-t">
+                <div className="flex items-center space-x-3 mb-3">
+                  {user.photoURL && (
+                    <img 
+                      src={user.photoURL} 
+                      alt="Profile" 
+                      className="w-8 h-8 rounded-full"
+                    />
+                  )}
+                  <div className="flex-1 min-w-0">
+                    <p className="text-sm font-medium truncate">
+                      {user.displayName || user.email}
+                    </p>
+                    <p className="text-xs text-muted-foreground truncate">
+                      {user.email}
+                    </p>
+                  </div>
+                </div>
+                <Button
+                  variant="outline"
+                  size="sm"
+                  onClick={logout}
+                  className="w-full justify-center"
+                >
+                  <LogOut className="h-4 w-4 mr-2" />
+                  Sign Out
+                </Button>
+              </div>
+            )}
           </div>
-        </section>
-      </main>
-    </div>
+        </div>
+      )}
+    </header>
   )
 }

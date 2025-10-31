@@ -13,16 +13,16 @@ import NotFound from './pages/notFound'
 const router = createHashRouter([
   {
     path: '/',
-    element: <RootLayout />,
+    element: <RootLayout />, // This works now - no props needed
     errorElement: <NotFound />,
     children: [
       {
         index: true,
-        element: <Dashboard />, // This now shows only when authenticated
+        element: <Dashboard />,
       },
       {
         path: 'tool/:toolId',
-        element: <ToolPage />, // This will also be protected
+        element: <ToolPage />,
       },
     ],
   },

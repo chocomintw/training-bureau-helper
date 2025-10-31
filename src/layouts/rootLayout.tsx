@@ -19,6 +19,6 @@ export default function RootLayout() {
     return <Login />
   }
 
-  // Just render the outlet - let the individual pages handle their own layout
+  // Return just the outlet - individual pages will handle their own layout
   return <Outlet />
 }
