@@ -1,23 +1,43 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
-import Sidebar from '../components/sidebar';
-import Header from '../components/header';
-import DebugWrapper from '../components/debug/debugWrapper';
+import { Outlet } from 'react-router-dom'
+import { useAuthState } from 'react-firebase-hooks/auth'
+import { auth } from '../lib/firebase'
+import { Login } from '../components/login'
+import { Loader2 } from 'lucide-react'
 
-const RootLayout: React.FC = () => {
-  return (
-    <DebugWrapper componentName="RootLayout">
-      <div className="min-h-screen bg-linear-to-br from-gray-50 to-gray-100 dark:from-gray-900 dark:to-gray-800">
-        <Sidebar />
-        <div className="ml-64">
-          <Header />
-          <main>
-            <Outlet />
-          </main>
-        </div>
+// Import your existing components
+import Header from '../components/header' // Your existing header
+import Sidebar from '../components/sidebar' // Your existing sidebar
+
+export default function RootLayout() {
+  const [user, loading] = useAuthState(auth)
+
+  if (loading) {
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <Loader2 className="w-8 h-8 animate-spin" />
       </div>
-    </DebugWrapper>
-  );
-};
+    )
+  }
 
-export default RootLayout;
+  if (!user) {
+    return <Login />
+  }
+
+  // Return your existing layout structure with auth
+  return (
+    <div className="flex h-screen bg-background">
+      {/* Your existing sidebar */}
+      <Sidebar />
+      
+      <div className="flex-1 flex flex-col overflow-hidden">
+        {/* Your existing header */}
+        <Header />
+        
+        {/* Main content area */}
+        <main className="flex-1 overflow-auto">
+          <Outlet />
+        </main>
+      </div>
+    </div>
+  )
+}

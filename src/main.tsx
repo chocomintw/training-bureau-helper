@@ -18,11 +18,11 @@ const router = createHashRouter([
     children: [
       {
         index: true,
-        element: <Dashboard />,
+        element: <Dashboard />, // This now shows only when authenticated
       },
       {
         path: 'tool/:toolId',
-        element: <ToolPage />,
+        element: <ToolPage />, // This will also be protected
       },
     ],
   },
