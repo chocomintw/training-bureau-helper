@@ -1,3 +1,4 @@
+// src/lib/routes.ts
 import cardsData from '@/data/cards.json';
 
 export interface RouteConfig {
@@ -31,7 +32,7 @@ export const generateRoutes = (): RouteConfig[] => {
     label: card.title,
     description: card.description,
     category: card.category,
-    isNew: card.featured, // Using featured as "new" indicator, adjust as needed
+    isNew: card.featured,
     isSenior: card.isSenior,
     icon: card.icon,
     featured: card.featured,
@@ -54,7 +55,6 @@ export const getToolRoutes = (): RouteConfig[] =>
 
 export const getToolRouteById = (id: string): RouteConfig | undefined =>
   routes.find(route => {
-    // Handle both /tool/{id} and direct id matching
     const routeId = route.path.replace('/tool/', '');
     return routeId === id || route.path === `/tool/${id}`;
   });
@@ -78,12 +78,10 @@ export const getRoutesByCategory = (): Record<string, RouteConfig[]> => {
 export const getFeaturedRoutes = (): RouteConfig[] =>
   routes.filter(route => route.featured);
 
-// Get all unique categories from routes
 export const getRouteCategories = (): string[] => {
   const categories = new Set(routes.map(route => route.category));
   return Array.from(categories);
 };
 
-// Check if a route exists
 export const routeExists = (path: string): boolean =>
   routes.some(route => route.path === path);

@@ -1,37 +1,61 @@
 {
   "cards": [
     {
-      "id": "1",
+      "id": "analytics",
       "title": "Grammar Checker",
-      "description": "Useful grammar checker in order to qualtiy check every applicant with their English proficiency.",
+      "description": "TBD",
+      "longDescription": "TBD",
       "icon": "globe",
       "href": "/tool/analytics",
-      "category": "Checkers",
-      "tags": ["checker", "grammar"],
+      "category": "Checker",
+      "tags": ["TBD"],
       "featured": true,
       "showInSidebar": true,
       "color": "blue",
       "createdBy": "system",
       "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2024-01-01T00:00:00Z",
-      "isPublic": true
+      "updatedAt": "2024-01-15T00:00:00Z",
+      "isPublic": true,
+      "metadata": {
+        "rating": 4.8,
+        "users": 1247,
+        "version": "2.1.0",
+        "lastUpdated": "2024-01-15",
+        "features": [
+          "Grammar checker"
+        ]
+      }
     },
     {
-      "id": "2",
+      "id": "vpat-processor",
       "title": "VPAT Processor (Beta)",
       "description": "Parse and analyze logs from applicants",
+      "longDescription": "Parse chat logs from VPAT sessions by character names and separate results for each character. Clean and organize your session data efficiently.",
       "icon": "file-text",
       "href": "/tool/vpat-processor",
-      "category": "Processors",
-      "tags": ["logs", "analysis", "automation"],
+      "category": "Processor",
+      "tags": ["logs", "analysis", "automation", "parsing"],
       "featured": false,
       "showInSidebar": true,
       "color": "green",
       "createdBy": "system",
       "createdAt": "2024-01-01T00:00:00Z",
-      "updatedAt": "2024-01-01T00:00:00Z",
+      "updatedAt": "2024-01-20T00:00:00Z",
       "isPublic": true,
-      "isSenior": true
+      "isSenior": true,
+      "metadata": {
+        "rating": 4.9,
+        "users": 892,
+        "version": "1.0.0",
+        "lastUpdated": "2024-01-20",
+        "features": [
+          "Upload session logs with timestamps",
+          "Filter by keywords and phrases",
+          "Remove duplicate entries",
+          "Chronological sorting",
+          "Export cleaned output"
+        ]
+      }
     }
   ]
 }

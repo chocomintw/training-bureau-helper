@@ -1,10 +1,12 @@
 // src/hooks/useCards.ts
 import { useState, useEffect } from 'react';
+import cardsData from '@/data/cards.json';
 
 export interface Card {
   id: string;
   title: string;
   description: string;
+  longDescription: string;
   icon: string;
   href: string;
   category: string;
@@ -17,10 +19,14 @@ export interface Card {
   updatedAt: string;
   isPublic: boolean;
   isSenior?: boolean;
+  metadata: {
+    rating: number;
+    users: number;
+    version: string;
+    lastUpdated: string;
+    features: string[];
+  };
 }
-
-// Import the JSON data
-import cardsData from '@/data/cards.json';
 
 export const useCards = () => {
   const [cards, setCards] = useState<Card[]>([]);
@@ -33,7 +39,7 @@ export const useCards = () => {
       ? [...cardsData.cards, ...JSON.parse(userCards)]
       : cardsData.cards;
     
-    setCards(allCards);
+    setCards(allCards as Card[]);
     setLoading(false);
   }, []);
 
@@ -92,8 +98,13 @@ export const useCards = () => {
     cards.filter(card =>
       card.title.toLowerCase().includes(query.toLowerCase()) ||
       card.description.toLowerCase().includes(query.toLowerCase()) ||
-      card.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase()))
+      card.tags.some(tag => tag.toLowerCase().includes(query.toLowerCase())) ||
+      card.category.toLowerCase().includes(query.toLowerCase())
     );
+
+  // Get card by ID or href
+  const getCardById = (id: string) => 
+    cards.find(card => card.id === id || card.href === id || card.href === `/tool/${id}`);
 
   return {
     cards,
@@ -106,5 +117,6 @@ export const useCards = () => {
     getSidebarTools,
     getCardsByCategory,
     searchCards,
+    getCardById,
   };
 };

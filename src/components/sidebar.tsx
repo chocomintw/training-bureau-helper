@@ -1,13 +1,15 @@
 // src/components/sidebar.tsx
 import { Link, useLocation } from 'react-router-dom'
 import { Home, HelpCircle, Shield } from 'lucide-react'
-import { getSidebarRoutes, getRoutesByCategory } from '@/config/routes'
+import { useCards } from '@/hooks/useCards'
 import { getIconComponent } from '@/utils/iconMapping'
 
 export default function Sidebar() {
   const location = useLocation()
-  const sidebarRoutes = getSidebarRoutes()
-  const routesByCategory = getRoutesByCategory()
+  const { getSidebarTools, getCategories } = useCards()
+  
+  const sidebarTools = getSidebarTools()
+  const categories = getCategories()
 
   const isActive = (path: string) => {
     const hashPath = `#${path}`
@@ -24,7 +26,7 @@ export default function Sidebar() {
           </div>
           <div>
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Training Bureau</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">{sidebarRoutes.length} tools available</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{sidebarTools.length} tools available</p>
           </div>
         </div>
       </div>
@@ -62,8 +64,9 @@ export default function Sidebar() {
           </h3>
           
           <div className="space-y-6">
-            {Object.entries(routesByCategory).map(([category, categoryRoutes]) => {
-              if (category === 'Navigation') return null; // Skip navigation category
+            {categories.map((category) => {
+              const categoryTools = sidebarTools.filter(tool => tool.category === category)
+              if (categoryTools.length === 0) return null
               
               return (
                 <div key={category}>
@@ -71,14 +74,14 @@ export default function Sidebar() {
                     {category}
                   </h4>
                   <div className="space-y-1">
-                    {categoryRoutes.map((route) => {
-                      const IconComponent = getIconComponent(route.icon || 'bar-chart-3')
+                    {categoryTools.map((tool) => {
+                      const IconComponent = getIconComponent(tool.icon)
                       return (
                         <Link
-                          key={route.path}
-                          to={route.path}
+                          key={tool.id}
+                          to={tool.href}
                           className={`w-full flex items-center space-x-3 px-3 py-2 text-sm rounded-lg transition-colors group ${
-                            isActive(route.path)
+                            isActive(tool.href)
                               ? "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300"
                               : "text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white hover:bg-gray-50 dark:hover:bg-gray-800"
                           }`}
@@ -88,20 +91,20 @@ export default function Sidebar() {
                           </div>
                           <div className="flex-1 text-left min-w-0">
                             <div className="flex items-center space-x-2">
-                              <span className="truncate font-medium">{route.label}</span>
-                              {route.isSenior && (
+                              <span className="truncate font-medium">{tool.title}</span>
+                              {tool.isSenior && (
                                 <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-purple-100 text-purple-800 dark:bg-purple-900 dark:text-purple-200">
                                   Senior
                                 </span>
                               )}
-                              {route.isNew && (
+                              {tool.featured && (
                                 <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
-                                  New
+                                  Featured
                                 </span>
                               )}
                             </div>
                             <p className="text-xs text-gray-500 dark:text-gray-400 truncate mt-1">
-                              {route.description}
+                              {tool.description}
                             </p>
                           </div>
                         </Link>
