@@ -5,7 +5,9 @@ import { Login } from '../components/login'
 import { Loader2 } from 'lucide-react'
 
 export default function RootLayout() {
-  const [user, loading] = useAuthState(auth)
+  const [user, loading, error] = useAuthState(auth)
+
+  console.log('Auth state:', { user, loading, error }) // Debug log
 
   if (loading) {
     return (
@@ -15,10 +17,18 @@ export default function RootLayout() {
     )
   }
 
+  if (error) {
+    console.error('Auth error:', error) // Debug log
+    return (
+      <div className="flex items-center justify-center min-h-screen">
+        <div className="text-red-500">Authentication error: {error.message}</div>
+      </div>
+    )
+  }
+
   if (!user) {
     return <Login />
   }
 
-  // Return just the outlet - individual pages will handle their own layout
   return <Outlet />
 }
