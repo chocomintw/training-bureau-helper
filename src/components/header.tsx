@@ -1,8 +1,6 @@
 import { Button } from '@/components/ui/button'
 import { ThemeToggle } from './themeToggler'
 import { LogOut } from 'lucide-react'
-import { useAuthState } from 'react-firebase-hooks/auth'
-import { auth } from '../lib/firebase'
 import { useDiscordAuth } from '../hooks/useDiscordAuth'
 
 interface HeaderProps {
@@ -10,8 +8,15 @@ interface HeaderProps {
 }
 
 export default function Header({ children }: HeaderProps) {
-  const [user] = useAuthState(auth)
-  const { logout } = useDiscordAuth()
+  const { user, logout } = useDiscordAuth()
+
+  const handleLogout = async () => {
+    try {
+      await logout()
+    } catch (error) {
+      console.error('Logout failed:', error)
+    }
+  }
 
   return (
     <header className="sticky top-0 z-50 border-b bg-background/95 backdrop-blur supports-backdrop-filter:bg-background/60">
@@ -69,7 +74,7 @@ export default function Header({ children }: HeaderProps) {
               <Button
                 variant="ghost"
                 size="sm"
-                onClick={logout}
+                onClick={handleLogout}
                 className="hidden items-center space-x-1 sm:flex"
               >
                 <LogOut className="h-4 w-4" />

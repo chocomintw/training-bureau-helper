@@ -20,4 +20,13 @@ export default defineConfig({
       },
     },
   },
+  server: {
+    host: 'localhost',
+    port: 5173,
+    // Ensure proper headers for cookies
+    headers: {
+      'Access-Control-Allow-Origin': 'http://localhost:5173',
+      'Access-Control-Allow-Credentials': 'true',
+    }
+  },
 })
