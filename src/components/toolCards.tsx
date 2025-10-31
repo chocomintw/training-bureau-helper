@@ -9,17 +9,42 @@ import {
   ChevronRight,
   ArrowRight
 } from 'lucide-react';
-import { getFeaturedTools, type Tool } from '@/config/tools';
 
-// Icon mapping
-const iconMap = {
-  BarChart3: BarChart3,
-  FileText: FileText,
-};
+interface Tool {
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+  category: string;
+  description: string;
+  longDescription: string;
+  isNew?: boolean;
+  isSenior?: boolean;
+}
 
 const ToolCards: React.FC = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
-  const tools = getFeaturedTools();
+
+  const tools: Tool[] = [
+    {
+      id: 'analytics',
+      name: 'Personal Analytics',
+      icon: <BarChart3 className="h-8 w-8" />,
+      category: 'Analytics',
+      description: 'Track and visualize your activity data.',
+      longDescription: 'All of your activity on the website with great charts and more!',
+      isNew: true
+    },
+    {
+      id: 'vpat-processor',
+      name: 'VPAT Processor (Beta)',
+      icon: <FileText className="h-8 w-8" />,
+      category: 'Processor',
+      description: 'Simply parse logs from every applicants.',
+      longDescription: 'Parse chat logs from VPAT sessions by character names and seperate result for each character.',
+      isNew: true,
+      isSenior: true
+    },
+  ];
 
   const visibleTools = tools.slice(currentIndex, currentIndex + 3);
   
@@ -33,12 +58,6 @@ const ToolCards: React.FC = () => {
     if (currentIndex > 0) {
       setCurrentIndex(currentIndex - 1);
     }
-  };
-
-  const getIconComponent = (iconName: string | undefined) => {
-    if (!iconName) return BarChart3;
-    const IconComponent = iconMap[iconName as keyof typeof iconMap];
-    return IconComponent || BarChart3;
   };
 
   return (
@@ -89,61 +108,57 @@ const ToolCards: React.FC = () => {
 
       {/* Tool Cards Grid */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        {visibleTools.map((tool: Tool) => {
-          const IconComponent = getIconComponent(tool.icon);
-          
-          return (
-            <Card 
-              key={tool.id} 
-              className="group hover:shadow-lg transition-all duration-300 animate-fade-in border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:scale-105"
-            >
-              <CardHeader className="pb-3">
-                <div className="flex items-start justify-between">
-                  <div className="p-2 bg-linear-to-r from-green-500 to-blue-500 rounded-lg">
-                    <IconComponent className="h-8 w-8" />
-                  </div>
-                  <div className="flex items-center space-x-2">
-                    {tool.isNew && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-600 dark:bg-yellow-800 dark:text-yellow-200">
-                        New
-                      </span>
-                    )}
-                    {tool.isSenior && (
-                      <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
-                        Senior+
-                      </span>
-                    )}
-                  </div>
+        {visibleTools.map((tool) => (
+          <Card 
+            key={tool.id} 
+            className="group hover:shadow-lg transition-all duration-300 animate-fade-in border-gray-200 dark:border-gray-700 bg-white dark:bg-gray-800 hover:scale-105"
+          >
+            <CardHeader className="pb-3">
+              <div className="flex items-start justify-between">
+                <div className="p-2 bg-linear-to-r from-green-500 to-blue-500 rounded-lg">
+                  {tool.icon}
                 </div>
-                <CardTitle className="text-xl text-gray-900 dark:text-white group-hover:text-green-500 dark:group-hover:text-green-500 transition-colors">
-                  {tool.label}
-                </CardTitle>
-                <CardDescription className="text-gray-600 dark:text-gray-400">
-                  {tool.description}
-                </CardDescription>
-              </CardHeader>
+                <div className="flex items-center space-x-2">
+                  {tool.isNew && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-yellow-100 text-yellow-600 dark:bg-yellow-800 dark:text-yellow-200">
+                      New
+                    </span>
+                  )}
+                  {tool.isSenior && (
+                    <span className="inline-flex items-center px-2 py-1 rounded-full text-xs font-medium bg-red-100 text-red-800 dark:bg-red-900 dark:text-red-200">
+                      Senior+
+                    </span>
+                  )}
+                </div>
+              </div>
+              <CardTitle className="text-xl text-gray-900 dark:text-white group-hover:text-green-500 dark:group-hover:text-green-500 transition-colors">
+                {tool.name}
+              </CardTitle>
+              <CardDescription className="text-gray-600 dark:text-gray-400">
+                {tool.description}
+              </CardDescription>
+            </CardHeader>
+            
+            <CardContent>
+              <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
+                {tool.longDescription}
+              </p>
               
-              <CardContent>
-                <p className="text-sm text-gray-600 dark:text-gray-400 mb-4">
-                  {tool.longDescription}
-                </p>
-                
-                <div className="flex items-center justify-between mb-4">
-                  <span className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full">
-                    {tool.category}
-                  </span>
-                </div>
-                
-                <Link to={tool.path}>
-                  <Button className="w-full bg-linear-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white group/btn">
-                    Open Tool
-                    <ArrowRight className="h-4 w-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
-                  </Button>
-                </Link>
-              </CardContent>
-            </Card>
-          );
-        })}
+              <div className="flex items-center justify-between mb-4">
+                <span className="text-xs px-2 py-1 bg-gray-100 dark:bg-gray-700 text-gray-600 dark:text-gray-400 rounded-full">
+                  {tool.category}
+                </span>
+              </div>
+              
+              <Link to={`/tool/${tool.id}`}>
+                <Button className="w-full bg-linear-to-r from-green-500 to-blue-500 hover:from-green-600 hover:to-blue-600 text-white group/btn">
+                  Open Tool
+                  <ArrowRight className="h-4 w-4 ml-2 group-hover/btn:translate-x-1 transition-transform" />
+                </Button>
+              </Link>
+            </CardContent>
+          </Card>
+        ))}
       </div>
 
       {/* Mobile Swipe Hint */}

@@ -1,23 +1,52 @@
 import React from 'react';
 import { 
+  BarChart3, 
   HelpCircle,
   Shield,
   Home,
+  FileText,
 } from 'lucide-react';
 import { Link, useLocation } from 'react-router-dom';
 import { cn } from '@/lib/utils';
-import { getToolsByCategory } from '@/config/tools';
+
+interface Tool {
+  id: string;
+  name: string;
+  icon: React.ReactNode;
+  category: string;
+  description: string;
+  isNew?: boolean;
+  isSenior?: boolean;
+}
 
 const Sidebar: React.FC = () => {
   const location = useLocation();
-  const categorizedTools = getToolsByCategory();
+  
+  const tools: Tool[] = [
+    {
+      id: 'analytics',
+      name: 'Analytics Dashboard',
+      icon: <BarChart3 className="h-5 w-5" />,
+      category: 'Analytics',
+      description: 'Track your activity data.'
+    },
+    {
+      id: 'vpat-processor',
+      name: 'VPAT Processor (Beta)',
+      icon: <FileText className="h-5 w-5" />,
+      category: 'Processor',
+      description: 'Parse logs from applicants.',
+      isNew: true,
+      isSenior: true
+    },
+  ];
 
-  // Check if current path is active
+  const categories = Array.from(new Set(tools.map(tool => tool.category)));
+
+  // Check if current path is active (updated for HashRouter)
   const isActive = (path: string) => {
-    if (path === '/') {
-      return location.pathname === '/';
-    }
-    return location.pathname.startsWith(path);
+    const hashPath = `#${path}`;
+    return location.hash === hashPath || (path === '/' && location.hash === '');
   };
 
   return (
@@ -31,7 +60,7 @@ const Sidebar: React.FC = () => {
           </div>
           <div>
             <h2 className="text-lg font-semibold text-gray-900 dark:text-white">Training Bureau</h2>
-            <p className="text-sm text-gray-500 dark:text-gray-400">Tools available</p>
+            <p className="text-sm text-gray-500 dark:text-gray-400">{tools.length} tools available</p>
           </div>
         </div>
       </div>
@@ -40,7 +69,7 @@ const Sidebar: React.FC = () => {
       <nav className="p-4">
         <div className="space-y-1">
           <Link
-            to="/"
+            to="/" // This will become #/
             className={cn(
               "w-full flex items-center space-x-3 px-3 py-2 text-sm font-medium rounded-lg transition-colors",
               isActive('/') 
@@ -69,31 +98,32 @@ const Sidebar: React.FC = () => {
           </h3>
           
           <div className="space-y-6">
-            {categorizedTools.map(({ category, tools }) => (
+            {categories.map((category) => (
               <div key={category}>
                 <h4 className="px-3 text-sm font-medium text-gray-900 dark:text-white mb-2">
                   {category}
                 </h4>
                 <div className="space-y-1">
-                  {tools.map((tool) => (
+                  {tools
+                    .filter(tool => tool.category === category)
+                    .map((tool) => (
                     <Link
                       key={tool.id}
-                      to={tool.path + "/"}
+                      to={`/tool/${tool.id}`} // This will become #/tool/vpat-processor
                       className={cn(
                         "w-full flex items-center space-x-3 px-3 py-2 text-sm rounded-lg transition-all duration-200 group",
                         "text-gray-700 dark:text-gray-300 hover:text-gray-900 dark:hover:text-white",
                         "hover:bg-gray-50 dark:hover:bg-gray-800",
-                        isActive(tool.path) && "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300"
+                        isActive(`/tool/${tool.id}`) && "bg-blue-50 dark:bg-blue-900/20 text-blue-700 dark:text-blue-300"
                       )}
                     >
                       {/* Tool Icon with gradient background */}
                       <div className="shrink-0 flex items-center justify-center w-8 h-8 bg-linear-to-r from-blue-500 to-purple-600 rounded-lg">
-                        {/* Icon would be dynamically loaded here */}
-                        <div className="w-5 h-5 bg-white/20 rounded"></div>
+                        {tool.icon}
                       </div>
                       <div className="flex-1 text-left min-w-0">
                         <div className="flex items-center space-x-2">
-                          <span className="truncate font-medium">{tool.label}</span>
+                          <span className="truncate font-medium">{tool.name}</span>
                           {tool.isNew && (
                             <span className="inline-flex items-center px-1.5 py-0.5 rounded-full text-xs font-medium bg-green-100 text-green-800 dark:bg-green-900 dark:text-green-200">
                               New

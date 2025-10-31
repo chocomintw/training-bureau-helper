@@ -60,7 +60,7 @@ const VpatProcessor: React.FC = () => {
             <div className="max-w-4xl mx-auto">
                 {/* Header */}
                 <div className="mb-6">
-                    <Link to="/training-bureau-helper/">
+                    <Link to="/">
                         <Button variant="ghost" className="mb-4">
                             <ArrowLeft className="h-4 w-4 mr-2" />
                             Back to Dashboard
