@@ -19,7 +19,7 @@ const NotFound: React.FC = () => {
             The page you're looking for doesn't exist or has been moved.
           </p>
         </div>
-        <Link to="/training-bureau-helper/">
+        <Link to="/">
           <Button className="bg-linear-to-r from-purple-500 to-blue-500 hover:from-purple-600 hover:to-blue-600">
             <Home className="h-4 w-4 mr-2" />
             Back to Dashboard
